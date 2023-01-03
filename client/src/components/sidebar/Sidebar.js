@@ -5,6 +5,8 @@ import PersonPinIcon from "@mui/icons-material/PersonPin";
 import AddIcon from "@mui/icons-material/Add";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LogoutIcon from "@mui/icons-material/Logout";
+import ErrorIcon from "@mui/icons-material/Error";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
@@ -15,14 +17,29 @@ const Sidebar = () => {
       <hr />
       <div className="center">
         <ul>
+          <p className="title">MAIN</p>
+          <Link to="/" className="react-link">
+            <li>
+              <DashboardIcon className="icon" />
+              <span>Dashboard</span>
+            </li>
+          </Link>
+          <p className="title">LISTS</p>
+          <Link to="/drivers" className="react-link">
+            <li>
+              <PersonIcon className="icon" />
+              <span>Drivers</span>
+            </li>
+          </Link>
           <li>
-            <DashboardIcon className="icon" />
-            <span>Dashboard</span>
+            <NotificationsIcon className="icon" />
+            <span>Notifications</span>
           </li>
           <li>
-            <PersonIcon className="icon" />
-            <span>Drivers</span>
+            <ErrorIcon className="icon" />
+            <span>Bug Reports</span>
           </li>
+          <p className="title">ADMIN</p>
           <li>
             <PersonPinIcon className="icon" />
             <span>Profile</span>
@@ -31,17 +48,13 @@ const Sidebar = () => {
             <AddIcon className="icon" />
             <span>New Admin</span>
           </li>
-          <li>
-            <NotificationsIcon className="icon" />
-            <span>Notifications</span>
-          </li>
+          <p className="title">OTHERS</p>
           <li>
             <LogoutIcon className="icon" />
             <span>Logout</span>
           </li>
         </ul>
       </div>
-      <div className="bottom">color mode</div>
     </div>
   );
 };
