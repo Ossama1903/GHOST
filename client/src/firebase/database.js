@@ -1,4 +1,13 @@
-import { getDatabase, set, ref, push } from "firebase/database";
+import {
+  getDatabase,
+  set,
+  ref,
+  push,
+  onValue,
+  query,
+  equalTo,
+  orderByChild,
+} from "firebase/database";
 import { app } from "./firebase";
 import authentication from "./authentication";
 
@@ -9,7 +18,6 @@ class Database {
     this.databaseInstance = passedInstance;
   }
   async createNewUser(
-    userId,
     email,
     password,
     firstName,
@@ -44,6 +52,42 @@ class Database {
       rideId,
       time,
       isApproved,
+    });
+  }
+
+  getUserByEmail(email, callback) {
+    const userRef = query(
+      ref(this.databaseInstance, `users`),
+      orderByChild("email"),
+      equalTo(email)
+    );
+    onValue(userRef, (snapshot) => {
+      if (snapshot.val()) callback(Object.values(snapshot.val())[0]);
+      else console.log("Couldn't find user with the email");
+    });
+  }
+
+  getUsersByRole(role, callback) {
+    const userRef = query(
+      ref(this.databaseInstance, `users`),
+      orderByChild("role"),
+      equalTo(role)
+    );
+    onValue(userRef, (snapshot) => {
+      if (snapshot.val()) callback(Object.values(snapshot.val()));
+      else console.log("Couldn't find any users with the specified role");
+    });
+  }
+
+  updateUsersState(setUsers) {
+    const usersRef = ref(db, "users");
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      var arrayToReturn = [];
+      for (const property in data) {
+        arrayToReturn.push({ id: property, ...data[property] });
+      }
+      setUsers(arrayToReturn);
     });
   }
 }

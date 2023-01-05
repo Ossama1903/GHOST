@@ -4,15 +4,14 @@ import { driverColumns, driverRows } from "../../datatablesource";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const Datatable = () => {
+const DriverDatatable = () => {
   const [data, setData] = useState(driverRows);
+  const [drivers, setDrivers] = useState([]);
 
   const handleDelete = (id) => {
     setData(data.filter((item) => item.id !== id));
   };
 
-  //ACTION COLUMN IS USED CONCATENADED TO THE DATAGRID'S COLUMNS FOR DISPLAY
-  //INCLUDES view button and delete button
   const actionColumn = [
     {
       field: "action",
@@ -21,7 +20,10 @@ const Datatable = () => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to={`/drivers/${params.row.id}`} style={{ textDecoration: "none" }}>
+            <Link
+              to={`/drivers/${params.row.id}`}
+              style={{ textDecoration: "none" }}
+            >
               <div className="viewButton">View</div>
             </Link>
             <div
@@ -35,6 +37,7 @@ const Datatable = () => {
       },
     },
   ];
+
   return (
     <div className="datatable">
       <div className="datatableTitle">
@@ -58,4 +61,4 @@ const Datatable = () => {
   );
 };
 
-export default Datatable;
+export default DriverDatatable;

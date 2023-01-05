@@ -5,21 +5,12 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Widget from "../../components/widget/Widget";
 import database from "../../firebase/database";
 import "./home.scss";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Home = () => {
+  const [users, setUsers] = useState([]);
+
   useEffect(() => {
-    database.createNewUser(
-      3,
-      "afnanhashmi112233@gmail.com",
-      "thisismypassword",
-      "Afnan",
-      "Hashmi",
-      "admin",
-      "--",
-      "male",
-      "2002-10-04"
-    );
   }, []);
 
   return (
