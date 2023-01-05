@@ -40,6 +40,7 @@ class Database {
         image,
         gender,
         dateOfBirth,
+        isFlagged: false,
       });
     } catch {
       console.log("Couldn't register");
@@ -62,7 +63,11 @@ class Database {
       equalTo(email)
     );
     onValue(userRef, (snapshot) => {
-      if (snapshot.val()) callback(Object.values(snapshot.val())[0]);
+      if (snapshot.val())
+        callback({
+          ...Object.values(snapshot.val())[0],
+          id: Object.keys(snapshot.val())[0],
+        });
       else console.log("Couldn't find user with the email");
     });
   }
@@ -74,8 +79,13 @@ class Database {
       equalTo(role)
     );
     onValue(userRef, (snapshot) => {
-      if (snapshot.val()) callback(Object.values(snapshot.val()));
-      else console.log("Couldn't find any users with the specified role");
+      if (snapshot.val()) {
+        const arrayToReturn = [];
+        for (var user in snapshot.val()) {
+          arrayToReturn.push({ ...snapshot.val()[user], id: user });
+        }
+        callback(arrayToReturn);
+      } else console.log("Couldn't find any users with the specified role");
     });
   }
 
