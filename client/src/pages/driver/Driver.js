@@ -7,25 +7,22 @@ import CircleIcon from "@mui/icons-material/Circle";
 import Button from "@mui/material/Button";
 import AssistantPhotoIcon from "@mui/icons-material/AssistantPhoto";
 import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import database from "../../firebase/database";
 
 const Driver = () => {
+  const { id } = useParams();
+  const [user, setUser] = useState({});
 
-  const {id} = useParams()
+  useEffect(() => {
+    database.getUserById(id, (user) => {
+      setUser(user);
+    });
+  }, []);
 
-  //GET DATA WITH USING REST API AGAINST id
-
-  //dummy data
-  const data = {
-    firstname: "Jane",
-    lastname: "Doe",
-    email: "janedoe@gmail.com",
-    phone: "+1 2345 67 89",
-    address: "Elton St. 234 Garden Yd. NewYork",
-    gender: "Female",
-    age: "26",
-    isActive: true,
-    imgSrc: "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
-  };
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <div className="driver">
@@ -39,19 +36,15 @@ const Driver = () => {
               <h1 className="title">Driver Information</h1>
             </div>
             <div className="item">
-              <img
-                src={data.imgSrc}
-                alt=""
-                className="itemImg"
-              />
+              <img src={user.image} alt="" className="itemImg" />
               <div className="details">
                 <h1 className="itemTitle">
                   <div className="name">
-                    {data.firstname} {data.lastname}
+                    {user.firstName} {user.lastName}
                   </div>
                   <div
                     className={`statusCircle ${
-                      data.isActive ? "active" : "inactive"
+                      !user.isFlagged ? "active" : "inactive"
                     }`}
                   >
                     <CircleIcon fontSize="small" />
@@ -60,36 +53,52 @@ const Driver = () => {
 
                 <div className="detailItem">
                   <span className="itemKey">Email:</span>
-                  <span className="itemValue">{data.email}</span>
+                  <span className="itemValue">{user.email}</span>
                 </div>
                 <div className="detailItem">
-                  <span className="itemKey">Phone:</span>
-                  <span className="itemValue">{data.phone}</span>
-                </div>
-                <div className="detailItem">
-                  <span className="itemKey">Address:</span>
-                  <span className="itemValue">{data.address}</span>
+                  <span className="itemKey">Date of birth:</span>
+                  <span className="itemValue">{user.dateOfBirth}</span>
                 </div>
                 <div className="detailItem">
                   <span className="itemKey">Gender:</span>
-                  <span className="itemValue">{data.gender}</span>
+                  <span
+                    className="itemValue"
+                    style={{ textTransform: "capitalize" }}
+                  >
+                    {user.gender}
+                  </span>
                 </div>
-                <div className="detailItem">
-                  <span className="itemKey">Age:</span>
-                  <span className="itemValue">{data.age}</span>
-                </div>
+
                 <div className="actionButtons">
                   <Button className="actionButton" variant="outlined">
                     SEND REPORT
                   </Button>
-                  <Button
-                    color="error"
-                    className="actionButton"
-                    variant="outlined"
-                  >
-                    <AssistantPhotoIcon />
-                    <span style={{marginLeft: "0.3rem"}}>{`FLAG ${data.firstname}`}</span>
-                  </Button>
+                  {!user.isFlagged && (
+                    <Button
+                      color="error"
+                      className="actionButton"
+                      variant="outlined"
+                      onClick={() => database.updateUserFlag(id, true)}
+                    >
+                      <AssistantPhotoIcon />
+                      <span
+                        style={{ marginLeft: "0.3rem" }}
+                      >{`FLAG ${user.firstName}`}</span>
+                    </Button>
+                  )}
+                  {user.isFlagged && (
+                    <Button
+                      color="success"
+                      className="actionButton"
+                      variant="outlined"
+                      onClick={() => database.updateUserFlag(id, false)}
+                    >
+                      <AssistantPhotoIcon />
+                      <span
+                        style={{ marginLeft: "0.3rem" }}
+                      >{`FLAG ${user.firstName}`}</span>
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

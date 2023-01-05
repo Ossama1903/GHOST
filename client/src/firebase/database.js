@@ -72,6 +72,15 @@ class Database {
     });
   }
 
+  getUserById(id, callback) {
+    const userRef = query(ref(this.databaseInstance, `users/${id}`));
+    onValue(userRef, (snapshot) => {
+      if (snapshot.val()) {
+        callback(snapshot.val());
+      } else console.log("Couldn't find user with the email");
+    });
+  }
+
   getUsersByRole(role, callback) {
     const userRef = query(
       ref(this.databaseInstance, `users`),
@@ -87,6 +96,10 @@ class Database {
         callback(arrayToReturn);
       } else console.log("Couldn't find any users with the specified role");
     });
+  }
+
+  async updateUserFlag(id, flag) {
+    await set(ref(db, `users/${id}/isFlagged`), flag);
   }
 
   updateUsersState(setUsers) {
