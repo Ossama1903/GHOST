@@ -96,7 +96,7 @@ const Driver = () => {
                       <AssistantPhotoIcon />
                       <span
                         style={{ marginLeft: "0.3rem" }}
-                      >{`FLAG ${user.firstName}`}</span>
+                      >{`CLEAR ${user.firstName}`}</span>
                     </Button>
                   )}
                 </div>
@@ -106,7 +106,7 @@ const Driver = () => {
           <div className="right">
             <Chart
               aspect={3 / 2}
-              title="Driver Reports ( Last 6 Months)"
+              title="Driver Reports (Last 6 Months)"
               callingComponent={"driver"}
             />
           </div>

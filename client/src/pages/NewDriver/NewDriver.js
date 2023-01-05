@@ -2,10 +2,34 @@ import "./newDriver.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import TextField from "@mui/material/TextField";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+function pad(d) {
+  return d < 10 ? "0" + d.toString() : d.toString();
+}
 
 const New = ({ inputs, title }) => {
   const [file, setFile] = useState("");
+  const [date, setDate] = useState(null);
+  const [textData, setTextData] = useState({
+    firstName: null,
+    lastName: null,
+    gender: null,
+    email: null,
+    password: null,
+  });
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    console.log(textData);
+    console.log(date);
+    console.log(file);
+  };
 
   return (
     <div className="newDriver">
@@ -39,14 +63,82 @@ const New = ({ inputs, title }) => {
                   style={{ display: "none" }}
                 />
               </div>
-
-              {inputs.map((input) => (
+              {/* {inputs.map((input) => (
                 <div className="formInput" key={input.id}>
-                  <label>{input.label}</label>
-                  <input type={input.type} placeholder={input.placeholder} />
+                  <input
+                    onChange={() => setTextData({ ...textData, id: "dsamda" })}
+                    type={input.type}
+                    placeholder={input.placeholder}
+                  />
                 </div>
-              ))}
-              <button>Send</button>
+              ))} */}
+              <div className="formInput">
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  onChange={(e) => {
+                    setTextData({ ...textData, firstName: e.target.value });
+                  }}
+                />
+              </div>
+              <div className="formInput">
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  onChange={(e) => {
+                    setTextData({ ...textData, lastName: e.target.value });
+                  }}
+                />
+              </div>
+              <div className="formInput">
+                <input
+                  type="text"
+                  placeholder="Gender"
+                  onChange={(e) => {
+                    setTextData({ ...textData, gender: e.target.value });
+                  }}
+                />
+              </div>
+              <div className="formInput">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  onChange={(e) => {
+                    setTextData({ ...textData, email: e.target.value });
+                  }}
+                />
+              </div>
+              <div className="formInput">
+                <input
+                  type="password"
+                  placeholder="Password"
+                  onChange={(e) => {
+                    setTextData({ ...textData, password: e.target.value });
+                  }}
+                />
+              </div>
+
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Date of Birth"
+                  value={date}
+                  onChange={(newValue) => {
+                    setDate(
+                      `${newValue.$y}-${pad(newValue.$m + 1)}-${pad(
+                        newValue.$D
+                      )}`
+                    );
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+              <button
+                style={{ width: "70%" }}
+                className="submit-button"
+                onClick={submitHandler}
+              >
+                Send
+              </button>
             </form>
           </div>
         </div>
