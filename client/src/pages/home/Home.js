@@ -10,8 +10,7 @@ import { useEffect, useState } from "react";
 const Home = () => {
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <div className="home">
