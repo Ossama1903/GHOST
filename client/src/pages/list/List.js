@@ -14,8 +14,6 @@ const List = () => {
     });
   }, []);
 
-  
-
   return (
     <div className="list">
       <Sidebar />

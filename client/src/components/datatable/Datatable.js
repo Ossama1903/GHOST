@@ -10,7 +10,7 @@ const driverColumns = [
     width: 170,
     renderCell: (params) => {
       return (
-        <div className="cellWithImg">
+        <div className="cellWithImg" style={{ textTransform: "capitalize" }}>
           {`${params.row.firstName}  ${params.row.lastName}`}
         </div>
       );
@@ -95,7 +95,6 @@ const DriverDatatable = ({ drivers }) => {
         columns={driverColumns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
-        checkboxSelection
       />
     </div>
   );
