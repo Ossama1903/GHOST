@@ -68,7 +68,7 @@ class Database {
           ...Object.values(snapshot.val())[0],
           id: Object.keys(snapshot.val())[0],
         });
-      else console.log("Couldn't find user with the email");
+      else callback(undefined);
     });
   }
 
