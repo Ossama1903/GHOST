@@ -1,5 +1,5 @@
 import Home from "./pages/home/Home";
-import Login from "./pages/login/Login";
+import LogIn from "./pages/login/LogIn";
 import List from "./pages/list/List";
 import Driver from "./pages/driver/Driver";
 import NewDriver from "./pages/NewDriver/NewDriver";
@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/">
             <Route index element={<Home />} />
-            <Route path="login" element={<Login />} />
+            <Route path="login" element={<LogIn />} />
             <Route path="drivers">
               <Route index element={<List />}></Route>
               <Route path=":id" element={<Driver />}></Route>
