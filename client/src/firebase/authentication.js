@@ -2,6 +2,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut,
 } from "firebase/auth";
 import { app } from "./firebase";
 import database from "./database";
@@ -30,7 +31,8 @@ class Authentication {
         password
       );
     } catch (e) {
-      console.log(e);
+      console.log(e.code);
+      console.log(e.message);
     }
   }
 
@@ -48,6 +50,10 @@ class Authentication {
         console.log("No user found");
       }
     });
+  }
+
+  signOutAdmin() {
+    signOut(auth);
   }
 
   getCurrentUser() {
