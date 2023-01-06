@@ -10,6 +10,7 @@ import {
 } from "firebase/database";
 import { app } from "./firebase";
 import authentication from "./authentication";
+import cloud from "./cloud";
 
 const db = getDatabase(app, "https://ghost-e4544-default-rtdb.firebaseio.com/");
 
@@ -42,8 +43,9 @@ class Database {
         dateOfBirth,
         isFlagged: false,
       });
-    } catch {
-      console.log("Couldn't register");
+      cloud.uploadUserImage(user.uid, image);
+    } catch (e) {
+      console.log(e);
     }
   }
 
