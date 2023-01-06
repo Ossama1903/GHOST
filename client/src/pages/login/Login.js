@@ -1,4 +1,3 @@
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -9,6 +8,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import database from "../../firebase/database";
+import authentication from "../../firebase/authentication";
+import { useEffect } from "react";
 
 const theme = createTheme();
 
@@ -18,21 +19,7 @@ export default function LogIn() {
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
-
-    database.getUserByEmail(email, (user) => {
-      if (user) {
-        if (user.role === "superadmin" || user.role === "admin") {
-          console.log("access granted");
-        } else {
-          console.log(
-            "ERROR: User doesn't have permission to log into this portal"
-          );
-        }
-      }
-      else {
-        console.log("No user found")
-      }
-    });
+    authentication.signInAdmin(email, password);
   };
 
   return (
