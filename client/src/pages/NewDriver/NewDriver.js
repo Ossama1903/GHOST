@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import cloud from "../../firebase/cloud";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import database from "../../firebase/database";
 
 function pad(d) {
   return d < 10 ? "0" + d.toString() : d.toString();
@@ -26,10 +26,16 @@ const New = ({ inputs, title }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(textData);
-    console.log(date);
-    console.log(file);
-    cloud.uploadUserImage(file);
+    database.createNewUser(
+      textData.email,
+      textData.password,
+      textData.firstName,
+      textData.lastName,
+      "driver",
+      file,
+      textData.gender,
+      date
+    );
   };
 
   return (
@@ -111,12 +117,12 @@ const New = ({ inputs, title }) => {
               </div>
 
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
+                <DesktopDatePicker
                   label="Date of Birth"
                   value={date}
                   onChange={(newValue) => {
                     setDate(
-                      `${newValue.$y}-${pad(newValue.$m + 1)}-${pad(
+                      `${newValue.$y}-${pad(newValue.$M + 1)}-${pad(
                         newValue.$D
                       )}`
                     );
