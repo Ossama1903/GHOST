@@ -7,6 +7,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ErrorIcon from "@mui/icons-material/Error";
 import { Link } from "react-router-dom";
+import authentication from "../../firebase/authentication";
 
 const Sidebar = () => {
   return (
@@ -49,10 +50,16 @@ const Sidebar = () => {
             <span>New Admin</span>
           </li>
           <p className="title">OTHERS</p>
-          <li>
-            <LogoutIcon className="icon" />
-            <span>Logout</span>
-          </li>
+          <Link to="#" className="react-link">
+            <li
+              onClick={() => {
+                authentication.signOutAdmin();
+              }}
+            >
+              <LogoutIcon className="icon" />
+              <span>Logout</span>
+            </li>
+          </Link>
         </ul>
       </div>
     </div>

@@ -5,10 +5,25 @@ import Driver from "./pages/driver/Driver";
 import NewDriver from "./pages/NewDriver/NewDriver";
 import { driverInputs } from "./formSource";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect, useState } from "react";
+import authentication from "./firebase/authentication";
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    console.log(currentUser);
+  }, []);
+
   return (
     <div className="App">
+      <button
+        onClick={() => {
+          console.log(authentication.getCurrentUser());
+        }}
+      >
+        signed in user
+      </button>
       <BrowserRouter>
         <Routes>
           <Route path="/">
