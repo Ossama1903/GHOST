@@ -3,11 +3,11 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useEffect, useState } from "react";
-
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import cloud from "../../firebase/cloud";
 
 function pad(d) {
   return d < 10 ? "0" + d.toString() : d.toString();
@@ -29,6 +29,7 @@ const New = ({ inputs, title }) => {
     console.log(textData);
     console.log(date);
     console.log(file);
+    cloud.uploadUserImage(file);
   };
 
   return (
@@ -63,15 +64,6 @@ const New = ({ inputs, title }) => {
                   style={{ display: "none" }}
                 />
               </div>
-              {/* {inputs.map((input) => (
-                <div className="formInput" key={input.id}>
-                  <input
-                    onChange={() => setTextData({ ...textData, id: "dsamda" })}
-                    type={input.type}
-                    placeholder={input.placeholder}
-                  />
-                </div>
-              ))} */}
               <div className="formInput">
                 <input
                   type="text"
