@@ -9,17 +9,34 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import database from "../../firebase/database";
 import authentication from "../../firebase/authentication";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
 export default function LogIn() {
+  const [isAwatingLoginResponse, setIsAwatingLoginResponse] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
-    authentication.signInAdmin(email, password);
+    setIsAwatingLoginResponse(true);
+    authentication.signInAdmin(email, password, () => {
+      setIsAwatingLoginResponse(false);
+      if (localStorage.getItem("token")) {
+        navigate("/");
+      }
+    });
   };
 
   return (
@@ -66,14 +83,27 @@ export default function LogIn() {
               id="password"
               autoComplete="current-password"
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
+            {!isAwatingLoginResponse && (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+            )}
+            {isAwatingLoginResponse && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "20px",
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            )}
           </Box>
         </Box>
       </Container>

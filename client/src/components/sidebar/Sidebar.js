@@ -6,10 +6,12 @@ import AddIcon from "@mui/icons-material/Add";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ErrorIcon from "@mui/icons-material/Error";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import authentication from "../../firebase/authentication";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -53,7 +55,9 @@ const Sidebar = () => {
           <Link to="#" className="react-link">
             <li
               onClick={() => {
-                authentication.signOutAdmin();
+                authentication.signOutAdmin(() => {
+                  navigate("/login");
+                });
               }}
             >
               <LogoutIcon className="icon" />
