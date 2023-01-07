@@ -9,20 +9,29 @@ import AssistantPhotoIcon from "@mui/icons-material/AssistantPhoto";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import database from "../../firebase/database";
+import cloud from "../../firebase/cloud";
 
 const Driver = () => {
   const { id } = useParams();
   const [user, setUser] = useState({});
+  const [userImageUrl, setUserImageUrl] = useState();
 
   useEffect(() => {
     database.getUserById(id, (user) => {
       setUser(user);
     });
-  }, []);
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
+    cloud
+      .getUserImage(id)
+      .then((url) => {
+        console.log(url);
+        setUserImageUrl(url);
+      })
+      .catch((e) => {
+        console.log(e);
+        setUserImageUrl();
+      });
+  }, []);
 
   return (
     <div className="driver">
@@ -36,7 +45,15 @@ const Driver = () => {
               <h1 className="title">Driver Information</h1>
             </div>
             <div className="item">
-              <img src={user.image} alt="" className="itemImg" />
+              <img
+                src={
+                  userImageUrl
+                    ? userImageUrl
+                    : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+                }
+                alt=""
+                className="itemImg"
+              />
               <div className="details">
                 <h1 className="itemTitle">
                   <div className="name">
