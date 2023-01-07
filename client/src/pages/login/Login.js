@@ -7,7 +7,6 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import database from "../../firebase/database";
 import authentication from "../../firebase/authentication";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -17,6 +16,7 @@ const theme = createTheme();
 
 export default function LogIn() {
   const [isAwatingLoginResponse, setIsAwatingLoginResponse] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,16 +27,30 @@ export default function LogIn() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setError(null);
+
     const data = new FormData(event.currentTarget);
     const email = data.get("email");
     const password = data.get("password");
+
+    if (email === "" || password === "") {
+      setError("Please fill in all the credentials");
+      return;
+    }
+
     setIsAwatingLoginResponse(true);
-    authentication.signInAdmin(email, password, () => {
-      setIsAwatingLoginResponse(false);
-      if (localStorage.getItem("token")) {
-        navigate("/");
-      }
-    });
+    authentication
+      .signInAdmin(email, password)
+      .then(() => {
+        setIsAwatingLoginResponse(false);
+        if (localStorage.getItem("token")) {
+          navigate("/");
+        }
+      })
+      .catch((e) => {
+        setIsAwatingLoginResponse(false);
+        setError(e.message);
+      });
   };
 
   return (
@@ -73,6 +87,7 @@ export default function LogIn() {
               autoComplete="email"
               autoFocus
             />
+
             <TextField
               margin="normal"
               required
@@ -83,6 +98,15 @@ export default function LogIn() {
               id="password"
               autoComplete="current-password"
             />
+            <div
+              style={
+                error
+                  ? { color: "red", fontSize: "12px" }
+                  : { color: "red", fontSize: "12px", visibility: "hidden" }
+              }
+            >
+              {error ? error : "."}
+            </div>
             {!isAwatingLoginResponse && (
               <Button
                 type="submit"
@@ -98,7 +122,7 @@ export default function LogIn() {
                 sx={{
                   display: "flex",
                   justifyContent: "center",
-                  marginTop: "20px",
+                  marginY: "18.5px",
                 }}
               >
                 <CircularProgress />
