@@ -11,6 +11,7 @@ import authentication from "../../firebase/authentication";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
+import { Checkmark } from "react-checkmark";
 
 const theme = createTheme();
 
@@ -55,6 +56,8 @@ export default function LogIn() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Checkmark size={"200"} />
+
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -87,7 +90,6 @@ export default function LogIn() {
               autoComplete="email"
               autoFocus
             />
-
             <TextField
               margin="normal"
               required
@@ -107,6 +109,7 @@ export default function LogIn() {
             >
               {error ? error : "."}
             </div>
+
             {!isAwatingLoginResponse && (
               <Button
                 type="submit"

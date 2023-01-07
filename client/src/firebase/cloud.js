@@ -4,11 +4,17 @@ import { app } from "./firebase";
 const storage = getStorage(app);
 
 class Cloud {
-  uploadUserImage(id, file, callback) {
-    console.log(id, file);
-    const storageRef = ref(storage, `profilePictures/${id}`);
-    uploadBytes(storageRef, file).then((snapshot) => {
-      typeof callback === "function" && callback();
+  uploadUserImage(id, file) {
+    return new Promise((resolve, reject) => {
+      const storageRef = ref(storage, `profilePictures/${id}`);
+      uploadBytes(storageRef, file)
+        .then((snapshot) => {
+          resolve(snapshot);
+        })
+        .catch((e) => {
+          console.log(e);
+          reject(e);
+        });
     });
   }
 }

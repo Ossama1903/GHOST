@@ -20,6 +20,8 @@ const New = ({ inputs, title }) => {
   const [file, setFile] = useState("");
   const [date, setDate] = useState(null);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
+  const [inSuccessAnimation, setInSuccessAnimation] = useState(false);
+  const [inErrorAnimation, setInErrorAnimation] = useState(false);
   const [textData, setTextData] = useState({
     firstName: null,
     lastName: null,
@@ -27,7 +29,7 @@ const New = ({ inputs, title }) => {
     email: null,
     password: null,
   });
-  const [error, setError] = useState("dmlsamdal");
+  const [error, setError] = useState("");
 
   const firstNameRef = useRef(null);
   const lastNameRef = useRef(null);
@@ -50,24 +52,37 @@ const New = ({ inputs, title }) => {
       return;
     }
     setIsAwaitingResponse(true);
-    database.createNewUser(
-      textData.email,
-      textData.password,
-      textData.firstName,
-      textData.lastName,
-      "driver",
-      file,
-      textData.gender,
-      date,
-      () => {
+    database
+      .createNewUser(
+        textData.email,
+        textData.password,
+        textData.firstName,
+        textData.lastName,
+        "driver",
+        file,
+        textData.gender,
+        date
+      )
+      .then((userId) => {
         setIsAwaitingResponse(false);
+        setInSuccessAnimation(true);
+        setInterval(() => {
+          setInSuccessAnimation(false);
+        }, 2000);
         firstNameRef.current.value = "";
         lastNameRef.current.value = "";
         genderRef.current.value = "";
         emailRef.current.value = "";
         passwordRef.current.value = "";
-      }
-    );
+      })
+      .catch((e) => {
+        setIsAwaitingResponse(false);
+        setInErrorAnimation(true);
+        setInterval(() => {
+          setInErrorAnimation(false);
+        }, 2000);
+        console.log(e);
+      });
   };
 
   return (
@@ -192,7 +207,13 @@ const New = ({ inputs, title }) => {
               </Box>
               {!isAwaitingResponse && (
                 <button
-                  style={{ width: "70%" }}
+                  style={
+                    inSuccessAnimation
+                      ? { width: "70%", backgroundColor: "#4FBF26" }
+                      : inErrorAnimation
+                      ? { width: "70%", backgroundColor: "#F20000" }
+                      : { width: "70%" }
+                  }
                   className="submit-button"
                   onClick={submitHandler}
                 >

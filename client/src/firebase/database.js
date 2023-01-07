@@ -1,6 +1,7 @@
 import {
   getDatabase,
   set,
+  get,
   ref,
   push,
   onValue,
@@ -18,7 +19,8 @@ class Database {
   constructor(passedInstance) {
     this.databaseInstance = passedInstance;
   }
-  async createNewUser(
+
+  createNewUser(
     email,
     password,
     firstName,
@@ -26,30 +28,74 @@ class Database {
     role,
     image,
     gender,
-    dateOfBirth,
-    callback
+    dateOfBirth
   ) {
-    try {
+    return new Promise(async (resolve, reject) => {
       const { user } = await authentication.registerWithEmailAndPassword(
         email,
         password
       );
-      await set(ref(this.databaseInstance, `users/${user.uid}`), {
-        email,
-        firstName,
-        lastName,
-        role,
-        image,
-        gender,
-        dateOfBirth,
-        isFlagged: false,
-      });
-      cloud.uploadUserImage(user.uid, image, callback);
-    } catch (e) {
-      callback();
-      console.log(e);
-    }
+      if (user) {
+        set(ref(this.databaseInstance, `users/${user.uid}`), {
+          email,
+          firstName,
+          lastName,
+          role,
+          image,
+          gender,
+          dateOfBirth,
+          isFlagged: false,
+        });
+
+        get(ref(this.databaseInstance, `users/${user.uid}`))
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              cloud
+                .uploadUserImage(user.uid, image)
+                .then(() => {
+                  resolve(user.uid);
+                })
+                .catch((e) => {
+                  //couldn't upload picture, delete data from realtime db and auth
+                  reject({
+                    message: "Couldn't upload picture on google cloud.",
+                  });
+                });
+            } else {
+              //delete user from firebase auth here
+              reject({
+                message: "Couldn't create user in firebase realtime database.",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            reject({
+              message: "Error reading data from realtime database.",
+            });
+          });
+      } else {
+        reject({ message: "Couldn't register user in firebase auth." });
+      }
+    });
   }
+
+  // async createNewUser(
+  //   email,
+  //   password,
+  //   firstName,
+  //   lastName,
+  //   role,
+  //   image,
+  //   gender,
+  //   dateOfBirth
+  // ) {
+  //   try {
+
+  //   } catch (e) {
+  //     return e;
+  //   }
+  // }
 
   async createNewAlert(time, userId, rideId, isApproved) {
     await push(ref(db, `alerts`), {
