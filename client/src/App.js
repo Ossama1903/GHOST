@@ -6,6 +6,7 @@ import NewDriver from "./pages/NewDriver/NewDriver";
 import { driverInputs } from "./formSource";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./utils/PrivateRoutes";
+import NewAdmin from "./pages/newAdmin/NewAdmin";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
                   }
                 ></Route>
               </Route>
+              <Route path="new-admin" title={"CREATE NEW ADMIN"} element={<NewAdmin />} />
             </Route>
           </Route>
         </Routes>

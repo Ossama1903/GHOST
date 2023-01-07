@@ -73,6 +73,7 @@ class Authentication {
   signOutAdmin(callback) {
     signOut(auth).then(() => {
       localStorage.removeItem("token");
+      localStorage.removeItem("email");
       typeof callback === "function" && callback();
     });
   }

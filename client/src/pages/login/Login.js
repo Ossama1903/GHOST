@@ -56,8 +56,6 @@ export default function LogIn() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Checkmark size={"200"} />
-
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box

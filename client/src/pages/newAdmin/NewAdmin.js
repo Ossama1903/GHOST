@@ -1,4 +1,4 @@
-import "./newDriver.scss";
+import "./newAdmin.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
@@ -16,7 +16,7 @@ function pad(d) {
   return d < 10 ? "0" + d.toString() : d.toString();
 }
 
-const New = ({ title }) => {
+const NewAdmin = ({ title }) => {
   const [file, setFile] = useState("");
   const [date, setDate] = useState(null);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
@@ -58,7 +58,7 @@ const New = ({ title }) => {
         textData.password,
         textData.firstName,
         textData.lastName,
-        "driver",
+        "admin",
         file,
         textData.gender,
         date
@@ -91,7 +91,7 @@ const New = ({ title }) => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>REGISTER A NEW DRIVER</h1>
+          <h1>REGISTER A NEW ADMIN</h1>
         </div>
         <div className="bottom">
           <div className="left">
@@ -240,4 +240,4 @@ const New = ({ title }) => {
   );
 };
 
-export default New;
+export default NewAdmin;
