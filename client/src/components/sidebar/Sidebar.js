@@ -47,10 +47,12 @@ const Sidebar = () => {
             <PersonPinIcon className="icon" />
             <span>Profile</span>
           </li>
-          <li>
-            <AddIcon className="icon" />
-            <span>New Admin</span>
-          </li>
+          <Link to="/new-admin" className="react-link">
+            <li>
+              <AddIcon className="icon" />
+              <span>New Admin</span>
+            </li>
+          </Link>
           <p className="title">OTHERS</p>
           <Link to="#" className="react-link">
             <li
