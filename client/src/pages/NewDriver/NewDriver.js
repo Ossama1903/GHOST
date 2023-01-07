@@ -2,13 +2,16 @@ import "./newDriver.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { useRef } from "react";
 import database from "../../firebase/database";
 
+import CircularProgress from "@mui/material/CircularProgress";
 function pad(d) {
   return d < 10 ? "0" + d.toString() : d.toString();
 }
@@ -16,6 +19,7 @@ function pad(d) {
 const New = ({ inputs, title }) => {
   const [file, setFile] = useState("");
   const [date, setDate] = useState(null);
+  const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
   const [textData, setTextData] = useState({
     firstName: null,
     lastName: null,
@@ -23,9 +27,29 @@ const New = ({ inputs, title }) => {
     email: null,
     password: null,
   });
+  const [error, setError] = useState("dmlsamdal");
+
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
+  const genderRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const submitHandler = (e) => {
     e.preventDefault();
+    if (
+      firstNameRef.current.value === "" ||
+      lastNameRef.current.value === "" ||
+      genderRef.current.value === "" ||
+      emailRef.current.value === "" ||
+      passwordRef.current.value === "" ||
+      file === "" ||
+      date === ""
+    ) {
+      setError("Please provide all of the necessary information");
+      return;
+    }
+    setIsAwaitingResponse(true);
     database.createNewUser(
       textData.email,
       textData.password,
@@ -34,7 +58,15 @@ const New = ({ inputs, title }) => {
       "driver",
       file,
       textData.gender,
-      date
+      date,
+      () => {
+        setIsAwaitingResponse(false);
+        firstNameRef.current.value = "";
+        lastNameRef.current.value = "";
+        genderRef.current.value = "";
+        emailRef.current.value = "";
+        passwordRef.current.value = "";
+      }
     );
   };
 
@@ -74,6 +106,7 @@ const New = ({ inputs, title }) => {
                 <input
                   type="text"
                   placeholder="First Name"
+                  ref={firstNameRef}
                   onChange={(e) => {
                     setTextData({ ...textData, firstName: e.target.value });
                   }}
@@ -83,6 +116,7 @@ const New = ({ inputs, title }) => {
                 <input
                   type="text"
                   placeholder="Last Name"
+                  ref={lastNameRef}
                   onChange={(e) => {
                     setTextData({ ...textData, lastName: e.target.value });
                   }}
@@ -92,6 +126,7 @@ const New = ({ inputs, title }) => {
                 <input
                   type="text"
                   placeholder="Gender"
+                  ref={genderRef}
                   onChange={(e) => {
                     setTextData({ ...textData, gender: e.target.value });
                   }}
@@ -101,6 +136,7 @@ const New = ({ inputs, title }) => {
                 <input
                   type="email"
                   placeholder="Email"
+                  ref={emailRef}
                   onChange={(e) => {
                     setTextData({ ...textData, email: e.target.value });
                   }}
@@ -110,12 +146,12 @@ const New = ({ inputs, title }) => {
                 <input
                   type="password"
                   placeholder="Password"
+                  ref={passwordRef}
                   onChange={(e) => {
                     setTextData({ ...textData, password: e.target.value });
                   }}
                 />
               </div>
-
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
                   label="Date of Birth"
@@ -130,13 +166,51 @@ const New = ({ inputs, title }) => {
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
-              <button
-                style={{ width: "70%" }}
-                className="submit-button"
-                onClick={submitHandler}
+              <Box
+                sx={
+                  error
+                    ? {
+                        width: "70%",
+                        display: "flex",
+                        justifyContent: "center",
+                        marginBottom: "-40px",
+                        fontSize: "12px",
+                      }
+                    : {
+                        width: "70%",
+                        display: "flex",
+                        justifyContent: "center",
+                        marginBottom: "-40px",
+                        visibility: "hidden",
+                        fontSize: "12px",
+                      }
+                }
               >
-                Send
-              </button>
+                <p style={{ marginTop: "15px", color: "red" }}>
+                  {error ? error : "."}
+                </p>
+              </Box>
+              {!isAwaitingResponse && (
+                <button
+                  style={{ width: "70%" }}
+                  className="submit-button"
+                  onClick={submitHandler}
+                >
+                  Send
+                </button>
+              )}
+              {isAwaitingResponse && (
+                <Box
+                  sx={{
+                    width: "70%",
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "20px",
+                  }}
+                >
+                  <CircularProgress sx={{ height: "10px" }} />
+                </Box>
+              )}
             </form>
           </div>
         </div>

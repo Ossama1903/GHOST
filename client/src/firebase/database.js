@@ -26,7 +26,8 @@ class Database {
     role,
     image,
     gender,
-    dateOfBirth
+    dateOfBirth,
+    callback
   ) {
     try {
       const { user } = await authentication.registerWithEmailAndPassword(
@@ -43,8 +44,9 @@ class Database {
         dateOfBirth,
         isFlagged: false,
       });
-      cloud.uploadUserImage(user.uid, image);
+      cloud.uploadUserImage(user.uid, image, callback);
     } catch (e) {
+      callback();
       console.log(e);
     }
   }
@@ -58,19 +60,21 @@ class Database {
     });
   }
 
-  getUserByEmail(email, callback) {
-    const userRef = query(
-      ref(this.databaseInstance, `users`),
-      orderByChild("email"),
-      equalTo(email)
-    );
-    onValue(userRef, (snapshot) => {
-      if (snapshot.val())
-        callback({
-          ...Object.values(snapshot.val())[0],
-          id: Object.keys(snapshot.val())[0],
-        });
-      else callback(undefined);
+  getUserByEmail(email) {
+    return new Promise((resolve, reject) => {
+      const userRef = query(
+        ref(this.databaseInstance, `users`),
+        orderByChild("email"),
+        equalTo(email)
+      );
+      onValue(userRef, (snapshot) => {
+        if (snapshot.val())
+          resolve({
+            ...Object.values(snapshot.val())[0],
+            id: Object.keys(snapshot.val())[0],
+          });
+        else reject();
+      });
     });
   }
 
