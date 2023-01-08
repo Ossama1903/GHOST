@@ -1,25 +1,24 @@
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import database from "../../firebase/database";
 import cloud from "../../firebase/cloud";
-// import CircleIcon from "@mui/icons-material/Circle";
-// import Button from "@mui/material/Button";
-// import EditIcon from "@mui/icons-material/Edit";
+import { useAuth } from "../../contexts/userContext";
+import Button from "@mui/material/Button";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Driver = () => {
-  const { id } = useParams();
   const [user, setUser] = useState({});
   const [userImageUrl, setUserImageUrl] = useState();
+  const { currentUser, signOutAdmin } = useAuth();
 
   useEffect(() => {
-    database.getUserById(id, (user) => {
+    database.getUserById(currentUser.uid, (user) => {
       setUser(user);
     });
 
     cloud
-      .getUserImage(id)
+      .getUserImage(currentUser.uid)
       .then((url) => {
         console.log(url);
         setUserImageUrl(url);
@@ -43,12 +42,12 @@ const Driver = () => {
             className="left"
             style={{ maxWidth: "400px", minHeight: "80vh" }}
           >
-            <div className="editButton">Edit</div>
             <div style={{ display: "flex" }}>
               <h1 className="title">Personal Information</h1>
             </div>
             <div className="item" style={{ marginTop: "50px" }}>
               <img
+                style={{ marginTop: "20px" }}
                 src={
                   userImageUrl
                     ? userImageUrl
@@ -59,7 +58,7 @@ const Driver = () => {
               />
               <div className="details">
                 <h1 className="itemTitle">
-                  <div className="name">
+                  <div className="name" style={{ textTransform: "capitalize" }}>
                     {user.firstName} {user.lastName}
                   </div>
                 </h1>
@@ -83,14 +82,19 @@ const Driver = () => {
                 </div>
               </div>
             </div>
-            {/* <div className="actionButtons">
-              <Button className="actionButton" variant="outlined">
-                <EditIcon />
-                <span
-                  style={{ marginLeft: "0.3rem" }}
-                >{`EDIT INFORMATION`}</span>
+            <div className="actionButtons">
+              <Button
+                onClick={() => {
+                  signOutAdmin(() => {});
+                }}
+                color="error"
+                className="actionButton"
+                variant="outlined"
+              >
+                <LogoutIcon className="icon" />
+                <span style={{ marginLeft: "0.3rem" }}>{`LOGOUT`}</span>
               </Button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>
