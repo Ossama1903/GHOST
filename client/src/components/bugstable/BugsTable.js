@@ -1,9 +1,9 @@
 import "./bugstable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import database from "../../firebase/database";
 
-const driverColumns = [
+const bugColumns = [
   {
     field: "id",
     headerName: "ID",
@@ -56,7 +56,7 @@ const actionColumn = [
           {params.row.Status === "True" && (
             <div
               className="deleteButton"
-              onClick={() => console.log("Delete clicked")}
+              onClick={() => database.updateBugStatus(params.row.id, "False")}
             >
               Unresolve
             </div>
@@ -64,7 +64,7 @@ const actionColumn = [
           {params.row.Status === "False" && (
             <div
               className="successButton"
-              onClick={() => console.log("Delete clicked")}
+              onClick={() => database.updateBugStatus(params.row.id, "True")}
             >
               Resolve
             </div>
@@ -78,19 +78,10 @@ const actionColumn = [
 const BugsTable = ({ bugs }) => {
   return (
     <div className="datatable">
-      <div className="datatableTitle">
-        <Link
-          style={{ textTransform: "uppercase" }}
-          to="/drivers/new"
-          className="link"
-        >
-          Add New
-        </Link>
-      </div>
       <DataGrid
         className="datagrid"
         rows={bugs}
-        columns={driverColumns.concat(actionColumn)}
+        columns={bugColumns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
       />
