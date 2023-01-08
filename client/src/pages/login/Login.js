@@ -11,7 +11,7 @@ import authentication from "../../firebase/authentication";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
-import { Checkmark } from "react-checkmark";
+import { useAuth } from "../../contexts/userContext";
 
 const theme = createTheme();
 
@@ -19,9 +19,10 @@ export default function LogIn() {
   const [isAwatingLoginResponse, setIsAwatingLoginResponse] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { currentUser, signInAdmin, setCurrentUser } = useAuth();
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
+    if (currentUser) {
       navigate("/");
     }
   }, []);
@@ -40,11 +41,10 @@ export default function LogIn() {
     }
 
     setIsAwatingLoginResponse(true);
-    authentication
-      .signInAdmin(email, password)
-      .then(() => {
+    signInAdmin(email, password)
+      .then((user) => {
         setIsAwatingLoginResponse(false);
-        if (localStorage.getItem("token")) {
+        if (currentUser) {
           navigate("/");
         }
       })

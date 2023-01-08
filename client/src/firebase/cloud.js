@@ -9,7 +9,6 @@ class Cloud {
       const storageRef = ref(storage, `profilePictures/${id}`);
       uploadBytes(storageRef, file)
         .then((snapshot) => {
-          console.log(snapshot);
           resolve(snapshot);
         })
         .catch((e) => {
