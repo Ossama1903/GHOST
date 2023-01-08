@@ -4,20 +4,37 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import { useEffect, useState } from "react";
+import database from "../../firebase/database";
 
 const Widget = ({ type }) => {
   let data;
 
+  const [drivers, setDrivers] = useState([]);
+  const [admins, setAdmins] = useState([]);
+  const [bugs, setBugs] = useState([]);
+
   //temporary
-  const amount = 100;
-  const diff = 20;
+  var amount = 0;
+
+  useEffect(() => {
+    database.getUsersByRole("driver", (drivers) => {
+      setDrivers(drivers);
+    });
+    database.getUsersByRole("admin", (admins) => {
+      setAdmins(admins);
+    });
+    database.getBugs((bugs) => {
+      setBugs(bugs);
+    });
+  }, []);
 
   switch (type) {
     case "driver":
+      amount = drivers.length;
       data = {
         title: "DRIVERS",
-        isMoney: false,
-        link: "See all drivers",
+        link: "View all drivers",
         icon: (
           <PersonOutlinedIcon
             className="icon"
@@ -29,11 +46,11 @@ const Widget = ({ type }) => {
         ),
       };
       break;
-    case "order":
+    case "admin":
+      amount = admins.length;
       data = {
-        title: "ORDERS",
-        isMoney: false,
-        link: "View all orders",
+        title: "ADMINS",
+        link: "Add new admin",
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
@@ -45,11 +62,11 @@ const Widget = ({ type }) => {
         ),
       };
       break;
-    case "earning":
+    case "bug":
+      amount = bugs.length;
       data = {
-        title: "EARNINGS",
-        isMoney: true,
-        link: "View net earnings",
+        title: "BUGS",
+        link: "View all bugs",
         icon: (
           <MonetizationOnOutlinedIcon
             className="icon"
@@ -58,10 +75,9 @@ const Widget = ({ type }) => {
         ),
       };
       break;
-    case "balance":
+    case "alert":
       data = {
-        title: "BALANCE",
-        isMoney: true,
+        title: "ALERTS",
         link: "See details",
         icon: (
           <AccountBalanceWalletOutlinedIcon
@@ -82,18 +98,10 @@ const Widget = ({ type }) => {
     <div className="widget">
       <div className="left">
         <span className="title">{data.title}</span>
-        <span className="counter">
-          {data.isMoney && "$"} {amount}
-        </span>
+        <span className="counter">{amount}</span>
         <span className="link">{data.link}</span>
       </div>
-      <div className="right">
-        <div className="percentage positive">
-          <KeyboardArrowUpIcon />
-          {diff} %
-        </div>
-        {data.icon}
-      </div>
+      <div className="right">{data.icon}</div>
     </div>
   );
 };
