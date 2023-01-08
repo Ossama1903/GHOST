@@ -55,6 +55,22 @@ class Database {
     });
   }
 
+  getBugs(callback) {
+    const alertRef = query(ref(this.databaseInstance, `Bugs`));
+    onValue(alertRef, (snapshot) => {
+      const arrayToReturn = [];
+      if (snapshot.val()) {
+        for (var alert in snapshot.val()) {
+          arrayToReturn.push({ ...snapshot.val()[alert], id: alert });
+        }
+        callback(arrayToReturn);
+      } else {
+        console.log("Couldn't find any users with the specified role");
+        callback(arrayToReturn);
+      }
+    });
+  }
+
   async updateUserFlag(id, flag) {
     await set(ref(db, `users/${id}/isFlagged`), flag);
   }

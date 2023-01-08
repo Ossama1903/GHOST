@@ -38,10 +38,12 @@ const Sidebar = () => {
             <NotificationsIcon className="icon" />
             <span>Notifications</span>
           </li>
-          <li>
-            <ErrorIcon className="icon" />
-            <span>Bug Reports</span>
-          </li>
+          <Link to="/bugs" className="react-link">
+            <li>
+              <ErrorIcon className="icon" />
+              <span>Bug Reports</span>
+            </li>
+          </Link>
           <p className="title">ADMIN</p>
           <Link to="/profile" className="react-link">
             <li>

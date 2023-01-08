@@ -22,7 +22,7 @@
       cursor: pointer;
     }
 
-    .link:hover{
+    .link:hover {
       color: white;
       background-color: #0d3b5c;
     }
@@ -65,6 +65,14 @@
       border-radius: 5px;
       color: darkblue;
       border: 1px dotted rgba(0, 0, 139, 0.596);
+      cursor: pointer;
+    }
+
+    .successButton {
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: #3abf00;
+      border: 1px dotted #3abf00;
       cursor: pointer;
     }
 
