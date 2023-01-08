@@ -3,16 +3,9 @@ import Featured from "../../components/featured/Featured";
 import Navbar from "../../components/navbar/Navbar";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Widget from "../../components/widget/Widget";
-import database from "../../firebase/database";
 import "./home.scss";
-import { useEffect, useState } from "react";
 
 const Home = () => {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-  }, []);
-
   return (
     <div className="home">
       <Sidebar />

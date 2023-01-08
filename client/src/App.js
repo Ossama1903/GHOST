@@ -7,30 +7,33 @@ import { driverInputs } from "./formSource";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import NewAdmin from "./pages/newAdmin/NewAdmin";
+import Profile from "./pages/profile/Profile";
+import { AuthProvider } from "./contexts/userContext";
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
-          <Route path="/">
-            <Route path="login" element={<LogIn />} />
-            <Route element={<PrivateRoutes />}>
-              <Route index element={<Home />} />
-              <Route path="drivers">
-                <Route index element={<List />}></Route>
-                <Route path=":id" element={<Driver />}></Route>
-                <Route
-                  path="new"
-                  element={
-                    <NewDriver inputs={driverInputs} title={"ADD DRIVER"} />
-                  }
-                ></Route>
+        <AuthProvider>
+          <Routes>
+            <Route path="/">
+              <Route path="login" element={<LogIn />} />
+              <Route element={<PrivateRoutes />}>
+                <Route index element={<Home />} />
+                <Route path="drivers">
+                  <Route index element={<List />}></Route>
+                  <Route path=":id" element={<Driver />}></Route>
+                  <Route
+                    path="new"
+                    element={<NewDriver inputs={driverInputs} />}
+                  ></Route>
+                </Route>
+                <Route path="new-admin" element={<NewAdmin />} />
+                <Route path="profile" element={<Profile />} />
               </Route>
-              <Route path="new-admin" title={"CREATE NEW ADMIN"} element={<NewAdmin />} />
             </Route>
-          </Route>
-        </Routes>
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );
