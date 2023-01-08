@@ -9,9 +9,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { useRef } from "react";
-import database from "../../firebase/database";
-
 import CircularProgress from "@mui/material/CircularProgress";
+import { useAuth } from "../../contexts/userContext";
 function pad(d) {
   return d < 10 ? "0" + d.toString() : d.toString();
 }
@@ -30,6 +29,7 @@ const NewAdmin = ({ title }) => {
     password: null,
   });
   const [error, setError] = useState("");
+  const { createNewUser } = useAuth();
 
   const firstNameRef = useRef(null);
   const lastNameRef = useRef(null);
@@ -52,17 +52,16 @@ const NewAdmin = ({ title }) => {
       return;
     }
     setIsAwaitingResponse(true);
-    database
-      .createNewUser(
-        textData.email,
-        textData.password,
-        textData.firstName,
-        textData.lastName,
-        "admin",
-        file,
-        textData.gender,
-        date
-      )
+    createNewUser(
+      textData.email,
+      textData.password,
+      textData.firstName,
+      textData.lastName,
+      "admin",
+      file,
+      textData.gender,
+      date
+    )
       .then((userId) => {
         setIsAwaitingResponse(false);
         setInSuccessAnimation(true);

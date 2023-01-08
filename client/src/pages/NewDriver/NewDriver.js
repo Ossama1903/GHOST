@@ -10,7 +10,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { useRef } from "react";
 import { useAuth } from "../../contexts/userContext";
-
 import CircularProgress from "@mui/material/CircularProgress";
 function pad(d) {
   return d < 10 ? "0" + d.toString() : d.toString();
@@ -53,7 +52,6 @@ const New = ({ title }) => {
       return;
     }
     setIsAwaitingResponse(true);
-
     createNewUser(
       textData.email,
       textData.password,
@@ -114,7 +112,15 @@ const New = ({ title }) => {
                 <input
                   type="file"
                   id="file"
-                  onChange={(e) => setFile(e.target.files[0])}
+                  onChange={(e) => {
+                    if (
+                      e.target.files[0].type === "image/jpeg" ||
+                      e.target.files[0].type === "image/png"
+                    ) {
+                      setFile(e.target.files[0]);
+                      setError("");
+                    } else setError("Please upload a png or jpeg file");
+                  }}
                   style={{ display: "none" }}
                 />
               </div>
