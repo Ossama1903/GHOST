@@ -9,6 +9,7 @@ import PrivateRoutes from "./utils/PrivateRoutes";
 import NewAdmin from "./pages/newAdmin/NewAdmin";
 import Profile from "./pages/profile/Profile";
 import { AuthProvider } from "./contexts/userContext";
+import Bugs from "./pages/bugs/Bugs";
 
 function App() {
   return (
@@ -27,6 +28,9 @@ function App() {
                     path="new"
                     element={<NewDriver inputs={driverInputs} />}
                   ></Route>
+                </Route>
+                <Route path="bugs">
+                  <Route index element={<Bugs />}></Route>
                 </Route>
                 <Route path="new-admin" element={<NewAdmin />} />
                 <Route path="profile" element={<Profile />} />
