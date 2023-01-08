@@ -71,6 +71,10 @@ class Database {
     });
   }
 
+  async updateBugStatus(id, status) {
+    await set(ref(db, `Bugs/${id}/Status`), status);
+  }
+
   async updateUserFlag(id, flag) {
     await set(ref(db, `users/${id}/isFlagged`), flag);
   }

@@ -31,6 +31,7 @@ function App() {
                 </Route>
                 <Route path="bugs">
                   <Route index element={<Bugs />}></Route>
+                  <Route path=":id" element={<Driver />}></Route>
                 </Route>
                 <Route path="new-admin" element={<NewAdmin />} />
                 <Route path="profile" element={<Profile />} />
