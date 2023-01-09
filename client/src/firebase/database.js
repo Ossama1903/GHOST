@@ -34,7 +34,7 @@ class Database {
     onValue(userRef, (snapshot) => {
       if (snapshot.val()) {
         callback(snapshot.val());
-      } else console.log("Couldn't find user with the email");
+      } else callback(null);
     });
   }
 
@@ -65,7 +65,6 @@ class Database {
         }
         callback(arrayToReturn);
       } else {
-        console.log("Couldn't find any users with the specified role");
         callback(arrayToReturn);
       }
     });

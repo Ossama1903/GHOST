@@ -6,7 +6,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { createNewUserFromAdmin } from "../api/admin";
+import { createNewUserFromAdmin, deleteUserFromAdmin } from "../api/admin";
 
 import {
   set,
@@ -16,6 +16,7 @@ import {
   query,
   equalTo,
   orderByChild,
+  remove,
 } from "firebase/database";
 
 import cloud from "../firebase/cloud";
@@ -56,6 +57,30 @@ export function AuthProvider({ children }) {
         })
         .catch((e) => {
           reject(e.code);
+        });
+    });
+  };
+
+  const deleteUser = (id) => {
+    return new Promise((resolve, reject) => {
+      remove(ref(db, `users/${id}`))
+        .then(() => {
+          deleteUserFromAdmin(id).then(() => {
+            cloud
+              .deleteUserImage(id)
+              .then(() => {
+                resolve();
+              })
+              .catch(() => {
+                reject();
+              });
+          });
+        })
+        .catch(() => {
+          reject();
+        })
+        .catch(() => {
+          reject();
         });
     });
   };
@@ -182,6 +207,7 @@ export function AuthProvider({ children }) {
     signInAdmin,
     signOutAdmin,
     createNewUser,
+    deleteUser,
   };
 
   return (

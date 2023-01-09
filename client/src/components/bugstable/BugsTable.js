@@ -47,12 +47,12 @@ const actionColumn = [
     renderCell: (params) => {
       return (
         <div className="cellAction">
-          <Link
+          {/* <Link
             to={`/drivers/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">View</div>
-          </Link>
+          </Link> */}
           {params.row.Status === "True" && (
             <div
               className="deleteButton"
