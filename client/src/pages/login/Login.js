@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/userContext";
+import cloud from "../../firebase/cloud";
 
 const theme = createTheme();
 
@@ -20,8 +21,12 @@ export default function LogIn() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { currentUser, signInAdmin, setCurrentUser } = useAuth();
+  const [logoUrl, setLogoUrl] = useState("");
 
   useEffect(() => {
+    cloud.getLogo().then((url) => {
+      setLogoUrl(url);
+    });
     if (currentUser) {
       navigate("/");
     }
@@ -66,12 +71,11 @@ export default function LogIn() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
+          <img
+            style={{ width: "200px" }}
+            src={logoUrl}
+            alt="Ghost logo"
+          />
           <Box
             component="form"
             onSubmit={handleSubmit}
