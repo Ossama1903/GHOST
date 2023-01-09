@@ -17,4 +17,17 @@ router.post("/create-user", (req, res) => {
     });
 });
 
+router.post("/delete-user", (req, res) => {
+  const { userId } = req.body;
+  getAuth()
+    .deleteUser(userId)
+    .then(() => {
+      res.send(true);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.send(false);
+    });
+});
+
 module.exports = router;

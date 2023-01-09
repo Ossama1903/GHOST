@@ -1,4 +1,10 @@
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { app } from "./firebase";
 
 const storage = getStorage(app);
@@ -14,6 +20,19 @@ class Cloud {
         .catch((e) => {
           console.log(e);
           reject(e);
+        });
+    });
+  }
+
+  deleteUserImage(id) {
+    return new Promise((resolve, reject) => {
+      const pictureRef = ref(storage, `profilePictures/${id}`);
+      deleteObject(pictureRef)
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject();
         });
     });
   }
