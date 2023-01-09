@@ -179,11 +179,13 @@ const New = ({ title }) => {
                   label="Date of Birth"
                   value={date}
                   onChange={(newValue) => {
-                    setDate(
-                      `${newValue.$y}-${pad(newValue.$M + 1)}-${pad(
-                        newValue.$D
-                      )}`
-                    );
+                    if (newValue) {
+                      setDate(
+                        `${newValue.$y}-${pad(newValue.$M + 1)}-${pad(
+                          newValue.$D
+                        )}`
+                      );
+                    }
                   }}
                   renderInput={(params) => <TextField {...params} />}
                 />
