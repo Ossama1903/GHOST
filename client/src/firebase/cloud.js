@@ -37,6 +37,18 @@ class Cloud {
     });
   }
 
+  getLogo() {
+    return new Promise((resolve, reject) => {
+      getDownloadURL(ref(storage, `staticImages/Ghost-modified.png`))
+        .then((url) => {
+          resolve(url);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
   getUserImage(id) {
     return new Promise((resolve, reject) => {
       getDownloadURL(ref(storage, `profilePictures/${id}`))
