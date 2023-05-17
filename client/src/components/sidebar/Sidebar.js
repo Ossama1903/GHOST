@@ -15,7 +15,16 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="top">
-        <span className="logo">ghostadmin</span>
+        <Link
+          to="/"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <img style={{ width: "100px" }} src="./sidebarLogo.png" />
+        </Link>
       </div>
       <hr />
       <div className="center">
@@ -34,10 +43,12 @@ const Sidebar = () => {
               <span>Drivers</span>
             </li>
           </Link>
-          <li>
-            <NotificationsIcon className="icon" />
-            <span>Notifications</span>
-          </li>
+          <Link to="/notifications" className="react-link">
+            <li>
+              <NotificationsIcon className="icon" />
+              <span>Notifications</span>
+            </li>
+          </Link>
           <Link to="/bugs" className="react-link">
             <li>
               <ErrorIcon className="icon" />

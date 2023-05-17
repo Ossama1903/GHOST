@@ -29,6 +29,25 @@ class Database {
     });
   }
 
+  async getAllAlerts(callback) {
+    const alertRef = query(ref(this.databaseInstance, `alerts`));
+    onValue(alertRef, (snapshot) => {
+      const arrayToReturn = [];
+      if (snapshot.val()) {
+        for (var alert in snapshot.val()) {
+          arrayToReturn.push({ ...snapshot.val()[alert], id: alert });
+        }
+        callback(arrayToReturn);
+      } else {
+        callback(arrayToReturn);
+      }
+    });
+  }
+
+  async updateAlertStatus(id, status) {
+    await set(ref(db, `alerts/${id}/isApproved`), status);
+  }
+
   getUserById(id, callback) {
     const userRef = query(ref(this.databaseInstance, `users/${id}`));
     onValue(userRef, (snapshot) => {

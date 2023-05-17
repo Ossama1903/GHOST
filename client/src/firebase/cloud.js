@@ -60,6 +60,18 @@ class Cloud {
         });
     });
   }
+
+  getAlertVideo(id) {
+    return new Promise((resolve, reject) => {
+      getDownloadURL(ref(storage, `footages/${id}`))
+        .then((url) => {
+          resolve(url);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
 }
 
 const cloud = new Cloud();

@@ -13,12 +13,24 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/userContext";
 import cloud from "../../firebase/cloud";
+import CustomSnackbar from "../../components/Toast/CustomSnackbar";
 
-const theme = createTheme();
+const theme = createTheme({
+  typography: {
+    fontFamily: "Nunito",
+  },
+  palette: {
+    primary: {
+      main: "#0D3B5C", // Specify your desired primary color
+    },
+    // Customize other color options if needed
+  },
+});
 
 export default function LogIn() {
   const [isAwatingLoginResponse, setIsAwatingLoginResponse] = useState(false);
   const [error, setError] = useState("");
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const navigate = useNavigate();
   const { currentUser, signInAdmin, setCurrentUser } = useAuth();
   const [logoUrl, setLogoUrl] = useState("");
@@ -42,6 +54,7 @@ export default function LogIn() {
 
     if (email === "" || password === "") {
       setError("Please fill in all the credentials");
+      setIsSnackbarOpen(true);
       return;
     }
 
@@ -56,86 +69,85 @@ export default function LogIn() {
       .catch((e) => {
         setIsAwatingLoginResponse(false);
         setError(e.message);
+        setIsSnackbarOpen(true);
       });
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <img
-            style={{ width: "200px" }}
-            src={logoUrl}
-            alt="Ghost logo"
-          />
+    <>
+      <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
           <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
+            sx={{
+              marginTop: 10,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
+            <img
+              style={{ width: "410px" }}
+              src={"./navLogo.png"}
+              alt="Ghost logo"
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <div
-              style={
-                error
-                  ? { color: "red", fontSize: "12px" }
-                  : { color: "red", fontSize: "12px", visibility: "hidden" }
-              }
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{ mt: 4 }}
             >
-              {error ? error : "."}
-            </div>
-
-            {!isAwatingLoginResponse && (
-              <Button
-                type="submit"
+              <TextField
+                margin="normal"
+                required
                 fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign In
-              </Button>
-            )}
-            {isAwatingLoginResponse && (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginY: "18.5px",
-                }}
-              >
-                <CircularProgress />
-              </Box>
-            )}
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              {!isAwatingLoginResponse && (
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Sign In
+                </Button>
+              )}
+              {isAwatingLoginResponse && (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  disabled
+                >
+                  <CircularProgress size={23} />
+                </Button>
+              )}
+            </Box>
           </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+        </Container>
+      </ThemeProvider>
+      <CustomSnackbar
+        open={isSnackbarOpen}
+        setOpen={setIsSnackbarOpen}
+        severity={"error"}
+        message={error}
+        duration={5000}
+      />
+    </>
   );
 }

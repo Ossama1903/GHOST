@@ -1,5 +1,5 @@
 import Home from "./pages/home/Home";
-import LogIn from "./pages/login/LogIn";
+import LogIn from "./pages/login/Login";
 import List from "./pages/list/List";
 import Driver from "./pages/driver/Driver";
 import NewDriver from "./pages/NewDriver/NewDriver";
@@ -10,6 +10,8 @@ import NewAdmin from "./pages/newAdmin/NewAdmin";
 import Profile from "./pages/profile/Profile";
 import { AuthProvider } from "./contexts/userContext";
 import Bugs from "./pages/bugs/Bugs";
+import Notifications from "./pages/notifications/Notifications";
+import Notification from "./pages/notification/Notification";
 
 function App() {
   return (
@@ -31,10 +33,13 @@ function App() {
                 </Route>
                 <Route path="bugs">
                   <Route index element={<Bugs />}></Route>
-                  <Route path=":id" element={<Driver />}></Route>
                 </Route>
                 <Route path="new-admin" element={<NewAdmin />} />
                 <Route path="profile" element={<Profile />} />
+                <Route path="notifications">
+                  <Route index element={<Notifications />}></Route>
+                  {/* <Route path=":id" element={<Notification />}></Route> */}
+                </Route>
               </Route>
             </Route>
           </Routes>
