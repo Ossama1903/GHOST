@@ -1,19 +1,26 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import cloud from "../../firebase/cloud";
 import { useAuth } from "../../contexts/userContext";
-import { deleteUserFromAdmin } from "../../api/admin";
 
 const DriverDatatable = ({ drivers }) => {
   const { deleteUser } = useAuth();
+
+  const disableColumnBehaviour = {
+    sortable: false,
+    filterable: false,
+    resizable: false,
+    disableColumnMenu: true,
+    disableReorder: true,
+    disableExport: true,
+    disableColumnSelector: true,
+  };
 
   const driverColumns = [
     {
       field: "driver",
       headerName: "Driver",
-      width: 170,
+      width: 250,
       renderCell: (params) => {
         return (
           <div className="cellWithImg" style={{ textTransform: "capitalize" }}>
@@ -21,22 +28,25 @@ const DriverDatatable = ({ drivers }) => {
           </div>
         );
       },
+      ...disableColumnBehaviour,
     },
     {
       field: "email",
       headerName: "Email",
-      width: 250,
+      width: 300,
+      ...disableColumnBehaviour,
     },
 
     {
       field: "gender",
       headerName: "Gender",
-      width: 100,
+      width: 150,
+      ...disableColumnBehaviour,
     },
     {
       field: "status",
       headerName: "Status",
-      width: 160,
+      width: 150,
       renderCell: (params) => {
         return (
           <>
@@ -49,11 +59,13 @@ const DriverDatatable = ({ drivers }) => {
           </>
         );
       },
+      ...disableColumnBehaviour,
     },
     {
       field: "dateOfBirth",
       headerName: "Date of birth",
       width: 160,
+      ...disableColumnBehaviour,
     },
   ];
 
@@ -61,7 +73,7 @@ const DriverDatatable = ({ drivers }) => {
     {
       field: "action",
       headerName: "Actions",
-      width: 400,
+      width: 200,
       renderCell: (params) => {
         return (
           <div className="cellAction">
@@ -88,6 +100,7 @@ const DriverDatatable = ({ drivers }) => {
           </div>
         );
       },
+      ...disableColumnBehaviour,
     },
   ];
 
@@ -108,6 +121,7 @@ const DriverDatatable = ({ drivers }) => {
         columns={driverColumns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
+        disableSelectionOnClick
       />
     </div>
   );

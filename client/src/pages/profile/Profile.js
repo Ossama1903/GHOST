@@ -17,6 +17,8 @@ const Driver = () => {
       setUser(user);
     });
 
+    console.log(currentUser.id);
+
     cloud
       .getUserImage(currentUser.uid)
       .then((url) => {

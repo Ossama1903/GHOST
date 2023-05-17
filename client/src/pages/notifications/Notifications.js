@@ -1,17 +1,19 @@
-import "./bugs.scss";
+import "./notifications.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import BugsTable from "../../components/bugstable/BugsTable";
 import { useEffect, useState } from "react";
 import database from "../../firebase/database";
+import cloud from "../../firebase/cloud";
+import { Link } from "react-router-dom";
 
-const List = () => {
+const Notifications = () => {
   const [bugs, setBugs] = useState([]);
 
   useEffect(() => {
-    database.getBugs((bugs) => {
-      setBugs(bugs);
-      console.log(bugs);
+    database.getAllAlerts((alerts) => {
+      setBugs(alerts);
+      console.log(alerts);
     });
   }, []);
 
@@ -26,4 +28,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default Notifications;

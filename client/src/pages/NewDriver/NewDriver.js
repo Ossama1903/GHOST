@@ -11,6 +11,7 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { useRef } from "react";
 import { useAuth } from "../../contexts/userContext";
 import CircularProgress from "@mui/material/CircularProgress";
+import CustomSnackbar from "../../components/Toast/CustomSnackbar";
 function pad(d) {
   return d < 10 ? "0" + d.toString() : d.toString();
 }
@@ -21,6 +22,9 @@ const New = ({ title }) => {
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
   const [inSuccessAnimation, setInSuccessAnimation] = useState(false);
   const [inErrorAnimation, setInErrorAnimation] = useState(false);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("");
+
   const [textData, setTextData] = useState({
     firstName: null,
     lastName: null,
@@ -48,7 +52,9 @@ const New = ({ title }) => {
       file === "" ||
       date === ""
     ) {
+      setSnackbarSeverity("error");
       setError("Please provide all of the necessary information");
+      setIsSnackbarOpen(true);
       return;
     }
     setIsAwaitingResponse(true);
@@ -64,10 +70,9 @@ const New = ({ title }) => {
     )
       .then((userId) => {
         setIsAwaitingResponse(false);
-        setInSuccessAnimation(true);
-        setInterval(() => {
-          setInSuccessAnimation(false);
-        }, 2000);
+        setSnackbarSeverity("success");
+        setError("A new driver has been added");
+        setIsSnackbarOpen(true);
         firstNameRef.current.value = "";
         lastNameRef.current.value = "";
         genderRef.current.value = "";
@@ -85,167 +90,154 @@ const New = ({ title }) => {
   };
 
   return (
-    <div className="newDriver">
-      <Sidebar />
-      <div className="newContainer">
-        <Navbar />
-        <div className="top">
-          <h1>REGISTER A NEW DRIVER</h1>
-        </div>
-        <div className="bottom">
-          <div className="left">
-            <img
-              src={
-                file
-                  ? URL.createObjectURL(file)
-                  : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-              }
-              alt=""
-            />
+    <>
+      <div className="newDriver">
+        <Sidebar />
+        <div className="newContainer">
+          <Navbar />
+          <div className="top">
+            <h1>REGISTER A NEW DRIVER</h1>
           </div>
-          <div className="right">
-            <form>
-              <div className="formInput">
-                <label htmlFor="file">
-                  Image: <DriveFolderUploadOutlinedIcon className="icon" />
-                </label>
-                <input
-                  type="file"
-                  id="file"
-                  onChange={(e) => {
-                    if (
-                      e.target.files[0].type === "image/jpeg" ||
-                      e.target.files[0].type === "image/png"
-                    ) {
-                      setFile(e.target.files[0]);
-                      setError("");
-                    } else setError("Please upload a png or jpeg file");
-                  }}
-                  style={{ display: "none" }}
-                />
-              </div>
-              <div className="formInput">
-                <input
-                  type="text"
-                  placeholder="First Name"
-                  ref={firstNameRef}
-                  onChange={(e) => {
-                    setTextData({ ...textData, firstName: e.target.value });
-                  }}
-                />
-              </div>
-              <div className="formInput">
-                <input
-                  type="text"
-                  placeholder="Last Name"
-                  ref={lastNameRef}
-                  onChange={(e) => {
-                    setTextData({ ...textData, lastName: e.target.value });
-                  }}
-                />
-              </div>
-              <div className="formInput">
-                <input
-                  type="text"
-                  placeholder="Gender"
-                  ref={genderRef}
-                  onChange={(e) => {
-                    setTextData({ ...textData, gender: e.target.value });
-                  }}
-                />
-              </div>
-              <div className="formInput">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  ref={emailRef}
-                  onChange={(e) => {
-                    setTextData({ ...textData, email: e.target.value });
-                  }}
-                />
-              </div>
-              <div className="formInput">
-                <input
-                  type="password"
-                  placeholder="Password"
-                  ref={passwordRef}
-                  onChange={(e) => {
-                    setTextData({ ...textData, password: e.target.value });
-                  }}
-                />
-              </div>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-                  label="Date of Birth"
-                  value={date}
-                  onChange={(newValue) => {
-                    if (newValue) {
-                      setDate(
-                        `${newValue.$y}-${pad(newValue.$M + 1)}-${pad(
-                          newValue.$D
-                        )}`
-                      );
-                    }
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-              <Box
-                sx={
-                  error
-                    ? {
-                        width: "70%",
-                        display: "flex",
-                        justifyContent: "center",
-                        marginBottom: "-40px",
-                        fontSize: "12px",
-                      }
-                    : {
-                        width: "70%",
-                        display: "flex",
-                        justifyContent: "center",
-                        marginBottom: "-40px",
-                        visibility: "hidden",
-                        fontSize: "12px",
-                      }
+          <div className="bottom">
+            <div className="left">
+              <img
+                src={
+                  file
+                    ? URL.createObjectURL(file)
+                    : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
                 }
-              >
-                <p style={{ marginTop: "15px", color: "red" }}>
-                  {error ? error : "."}
-                </p>
-              </Box>
-              {!isAwaitingResponse && (
-                <button
-                  style={
-                    inSuccessAnimation
-                      ? { width: "70%", backgroundColor: "#4FBF26" }
-                      : inErrorAnimation
-                      ? { width: "70%", backgroundColor: "#F20000" }
-                      : { width: "70%" }
-                  }
-                  className="submit-button"
-                  onClick={submitHandler}
-                >
-                  REGISTER
-                </button>
-              )}
-              {isAwaitingResponse && (
-                <Box
-                  sx={{
-                    width: "70%",
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "20px",
-                  }}
-                >
-                  <CircularProgress sx={{ height: "10px" }} />
-                </Box>
-              )}
-            </form>
+                alt=""
+              />
+            </div>
+            <div className="right">
+              <form>
+                <div className="formInput">
+                  <label htmlFor="file">
+                    Image: <DriveFolderUploadOutlinedIcon className="icon" />
+                  </label>
+                  <input
+                    type="file"
+                    id="file"
+                    onChange={(e) => {
+                      if (
+                        e.target.files[0].type === "image/jpeg" ||
+                        e.target.files[0].type === "image/png"
+                      ) {
+                        setFile(e.target.files[0]);
+                      } else {
+                        setError("Please upload a png or jpeg file");
+                        setIsSnackbarOpen(true);
+                      }
+                    }}
+                    style={{ display: "none" }}
+                  />
+                </div>
+                <div className="formInput">
+                  <input
+                    type="text"
+                    placeholder="First Name"
+                    ref={firstNameRef}
+                    onChange={(e) => {
+                      setTextData({ ...textData, firstName: e.target.value });
+                    }}
+                  />
+                </div>
+                <div className="formInput">
+                  <input
+                    type="text"
+                    placeholder="Last Name"
+                    ref={lastNameRef}
+                    onChange={(e) => {
+                      setTextData({ ...textData, lastName: e.target.value });
+                    }}
+                  />
+                </div>
+                <div className="formInput">
+                  <input
+                    type="text"
+                    placeholder="Gender"
+                    ref={genderRef}
+                    onChange={(e) => {
+                      setTextData({ ...textData, gender: e.target.value });
+                    }}
+                  />
+                </div>
+                <div className="formInput">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    ref={emailRef}
+                    onChange={(e) => {
+                      setTextData({ ...textData, email: e.target.value });
+                    }}
+                  />
+                </div>
+                <div className="formInput">
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    ref={passwordRef}
+                    onChange={(e) => {
+                      setTextData({ ...textData, password: e.target.value });
+                    }}
+                  />
+                </div>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DesktopDatePicker
+                    label="Date of Birth"
+                    value={date}
+                    onChange={(newValue) => {
+                      if (newValue) {
+                        setDate(
+                          `${newValue.$y}-${pad(newValue.$M + 1)}-${pad(
+                            newValue.$D
+                          )}`
+                        );
+                      }
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+                {!isAwaitingResponse && (
+                  <button
+                    style={
+                      inSuccessAnimation
+                        ? { width: "70%", backgroundColor: "#4FBF26" }
+                        : inErrorAnimation
+                        ? { width: "70%", backgroundColor: "#F20000" }
+                        : { width: "70%" }
+                    }
+                    className="submit-button"
+                    onClick={submitHandler}
+                  >
+                    REGISTER
+                  </button>
+                )}
+                {isAwaitingResponse && (
+                  <Box
+                    sx={{
+                      width: "70%",
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "20px",
+                    }}
+                  >
+                    <CircularProgress sx={{ height: "10px" }} />
+                  </Box>
+                )}
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <CustomSnackbar
+        open={isSnackbarOpen}
+        setOpen={setIsSnackbarOpen}
+        severity={snackbarSeverity}
+        message={error}
+        duration={5000}
+      />
+    </>
   );
 };
 

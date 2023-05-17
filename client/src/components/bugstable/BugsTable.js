@@ -1,18 +1,17 @@
 import "./bugstable.scss";
 import { DataGrid } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
 import database from "../../firebase/database";
 
 const bugColumns = [
   {
     field: "id",
     headerName: "ID",
-    width: 220,
+    width: 250,
   },
   {
-    field: "email",
+    field: "userId",
     headerName: "User",
-    width: 250,
+    width: 300,
   },
 
   {
@@ -22,20 +21,29 @@ const bugColumns = [
     renderCell: (params) => {
       return (
         <>
-          {params.row.Status === "False" && (
-            <div className={`cellWithStatus flagged`}>unresolved</div>
+          {params.row.isApproved === false && (
+            <div className={`cellWithStatus flagged`}>Unapproved</div>
           )}
-          {params.row.Status === "True" && (
-            <div className={`cellWithStatus clear`}>resolved</div>
+          {params.row.isApproved === true && (
+            <div className={`cellWithStatus clear`}>Approved</div>
           )}
         </>
       );
     },
   },
   {
-    field: "subject",
-    headerName: "Subject",
-    width: 200,
+    field: "time",
+    headerName: "Time",
+    width: 300,
+    renderCell: (params) => {
+      return (
+        <>
+          <div>{`${params.row.time.split(" ")[1]} ${
+            params.row.time.split(" ")[2]
+          }, ${params.row.time.split(" ")[3]}`}</div>
+        </>
+      );
+    },
   },
 ];
 
@@ -43,30 +51,24 @@ const actionColumn = [
   {
     field: "action",
     headerName: "Actions",
-    width: 400,
+    width: 100,
     renderCell: (params) => {
       return (
         <div className="cellAction">
-          {/* <Link
-            to={`/drivers/${params.row.id}`}
-            style={{ textDecoration: "none" }}
-          >
-            <div className="viewButton">View</div>
-          </Link> */}
-          {params.row.Status === "True" && (
+          {params.row.isApproved === true && (
             <div
               className="deleteButton"
-              onClick={() => database.updateBugStatus(params.row.id, "False")}
+              onClick={() => database.updateAlertStatus(params.row.id, false)}
             >
-              Unresolve
+              Unapprove
             </div>
           )}
-          {params.row.Status === "False" && (
+          {params.row.isApproved === false && (
             <div
               className="successButton"
-              onClick={() => database.updateBugStatus(params.row.id, "True")}
+              onClick={() => database.updateAlertStatus(params.row.id, true)}
             >
-              Resolve
+              Approve
             </div>
           )}
         </div>
@@ -84,6 +86,7 @@ const BugsTable = ({ bugs }) => {
         columns={bugColumns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
+        disableSelectionOnClick
       />
     </div>
   );
